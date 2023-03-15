@@ -17,7 +17,8 @@ final class Payload
     /**
      * @var string
      */
-    private $domain;
+    //private $hostname;
+    private $hostname;
 
     /**
      * @var string
@@ -27,7 +28,8 @@ final class Payload
     /**
      * @var string
      */
-    private $ipv4;
+    //private $myip;
+    private $myip;
 
     /**
      * @var string
@@ -56,10 +58,10 @@ final class Payload
         return
             !empty($this->user) &&
             !empty($this->password) &&
-            !empty($this->domain) &&
+            !empty($this->hostname) &&
             (
                 (
-                    !empty($this->ipv4) && $this->isValidIpv4()
+                    !empty($this->myip) && $this->isValidIpv4()
                 )
                 ||
                 (
@@ -89,7 +91,7 @@ final class Payload
      */
     public function getDomain()
     {
-        return $this->domain;
+        return $this->hostname;
     }
 
     /**
@@ -112,7 +114,7 @@ final class Payload
     /**
      * there is no good way to get the correct "registrable" Domain without external libs!
      *
-     * @see https://github.com/jeremykendall/php-domain-parser
+     * @see https://github.com/jeremykendall/php-hostname-parser
      *
      * this method is still tricky, because:
      *
@@ -126,14 +128,14 @@ final class Payload
      */
     public function getHostname()
     {
-        // hack if top level domain are used for dynDNS
-        if (1 === substr_count($this->domain, '.')) {
-            return $this->domain;
+        // hack if top level hostname are used for dynDNS
+        if (1 === substr_count($this->hostname, '.')) {
+            return $this->hostname;
         }
 
-        $domainParts = explode('.', $this->domain);
-        array_shift($domainParts); // remove sub domain
-        return implode('.', $domainParts);
+        $hostnameParts = explode('.', $this->hostname);
+        array_shift($hostnameParts); // remove sub hostname
+        return implode('.', $hostnameParts);
     }
 
     /**
@@ -141,7 +143,7 @@ final class Payload
      */
     public function getIpv4()
     {
-        return $this->ipv4;
+        return $this->myip;
     }
 
     /**
@@ -149,7 +151,7 @@ final class Payload
      */
     public function isValidIpv4()
     {
-        return (bool)filter_var($this->ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+        return (bool)filter_var($this->myip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
     }
 
     /**
